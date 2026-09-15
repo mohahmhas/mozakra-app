@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import '../../core/network/network_exception.dart';
-
 class ApiClient {
   ApiClient({
     required Dio dio,
@@ -13,12 +12,12 @@ class ApiClient {
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
-  }) async {
+  }) {
     return _request(
       () => _dio.get<T>(
         path,
         queryParameters: queryParameters,
-        options: Options(
+        options: _options(
           headers: headers,
           extra: extra,
         ),
@@ -32,13 +31,13 @@ class ApiClient {
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
-  }) async {
+  }) {
     return _request(
       () => _dio.post<T>(
         path,
         data: data,
         queryParameters: queryParameters,
-        options: Options(
+        options: _options(
           headers: headers,
           extra: extra,
         ),
@@ -52,13 +51,13 @@ class ApiClient {
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
-  }) async {
+  }) {
     return _request(
       () => _dio.put<T>(
         path,
         data: data,
         queryParameters: queryParameters,
-        options: Options(
+        options: _options(
           headers: headers,
           extra: extra,
         ),
@@ -72,13 +71,13 @@ class ApiClient {
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
-  }) async {
+  }) {
     return _request(
       () => _dio.patch<T>(
         path,
         data: data,
         queryParameters: queryParameters,
-        options: Options(
+        options: _options(
           headers: headers,
           extra: extra,
         ),
@@ -92,17 +91,27 @@ class ApiClient {
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
-  }) async {
+  }) {
     return _request(
       () => _dio.delete<T>(
         path,
         data: data,
         queryParameters: queryParameters,
-        options: Options(
+        options: _options(
           headers: headers,
           extra: extra,
         ),
       ),
+    );
+  }
+
+  Options _options({
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+  }) {
+    return Options(
+      headers: headers,
+      extra: extra,
     );
   }
 
@@ -113,10 +122,7 @@ class ApiClient {
       return await request();
     } on DioException catch (exception) {
       throw NetworkException.fromDioException(exception);
-    } catch (exception) {
-      throw NetworkException(
-        message: exception.toString(),
-      );
     }
   }
 }
+

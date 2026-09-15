@@ -4,19 +4,21 @@ import '../../constants/app_constants.dart';
 import '../../storage/secure_storage_service.dart';
 
 class AuthInterceptor extends Interceptor {
+  final SecureStorageService _secureStorage;
+  static const String _requiresAuthKey = 'requiresAuth';
   AuthInterceptor({
     required SecureStorageService secureStorage,
   }) : _secureStorage = secureStorage;
 
-  final SecureStorageService _secureStorage;
-
+  
   @override
   Future<void> onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    final requiresAuth =
-        options.extra['requiresAuth'] as bool? ?? true;
+   try{
+     final requiresAuth =
+        options.extra[_requiresAuthKey] as bool? ?? true;
 
     if (!requiresAuth) {
       handler.next(options);
@@ -31,5 +33,11 @@ class AuthInterceptor extends Interceptor {
     }
 
     handler.next(options);
+   }catch(e){
+    handler.reject(DioException(requestOptions: options, error: e,
+    stackTrace: StackTrace.current,
+    type:DioExceptionType.unknown
+    ));
+   }
   }
 }
