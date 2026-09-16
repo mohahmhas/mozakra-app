@@ -69,7 +69,7 @@ void _registerDataSources() {
 void _registerNetwork() {
   // Secure Storage
   getIt.registerLazySingleton<SecureStorageService>(
-    () => SecureStorageService(),
+   SecureStorageService.new,
   );
   // Dio
   getIt.registerLazySingleton<Dio>(() {
