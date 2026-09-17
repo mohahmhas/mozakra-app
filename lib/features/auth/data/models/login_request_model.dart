@@ -13,4 +13,10 @@ class LoginRequestModel {
       'password': password,
     };
   }
+  factory LoginRequestModel.fromJson(Map<String, dynamic> json) {
+    return LoginRequestModel(
+      email: json['email'] as String,
+      password: json['password'] as String,
+    );
+  }
 }

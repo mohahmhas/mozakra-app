@@ -5,7 +5,7 @@ import '../../storage/secure_storage_service.dart';
 
 class AuthInterceptor extends Interceptor {
   final SecureStorageService _secureStorage;
-  static const String _requiresAuthKey = 'requiresAuth';
+  static const String requiresAuthKey = 'requiresAuth';
   AuthInterceptor({
     required SecureStorageService secureStorage,
   }) : _secureStorage = secureStorage;
@@ -18,7 +18,7 @@ class AuthInterceptor extends Interceptor {
   ) async {
    try{
      final requiresAuth =
-        options.extra[_requiresAuthKey] as bool? ?? true;
+        options.extra[requiresAuthKey] as bool? ?? true;
 
     if (!requiresAuth) {
       handler.next(options);

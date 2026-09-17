@@ -16,4 +16,12 @@ class RegisterRequestModel {
       'password': password,
     };
   }
+
+  factory RegisterRequestModel.fromJson(Map<String, dynamic> json) {
+    return RegisterRequestModel(
+      name: json['name'] as String,
+      email: json['email'] as String,
+      password: json['password'] as String,
+    );
+  }
 }
