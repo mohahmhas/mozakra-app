@@ -1,4 +1,6 @@
+import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:e_store/core/network/api_client.dart';
 import 'package:e_store/core/network/interceptors/auth_interceptor.dart';
 import 'package:e_store/core/network/interceptors/logging_interceptor.dart';
@@ -71,6 +73,9 @@ void _registerNetwork() {
   getIt.registerLazySingleton<SecureStorageService>(
    SecureStorageService.new,
   );
+    getIt.registerLazySingleton<PersistCookieJar>(
+    () => PersistCookieJar(),
+  );
   // Dio
   getIt.registerLazySingleton<Dio>(() {
     final dio = Dio(
@@ -87,7 +92,14 @@ void _registerNetwork() {
       ),
     );
     dio.interceptors.add(
-      AuthInterceptor(secureStorage: getIt<SecureStorageService>()),
+      CookieManager(
+        getIt<PersistCookieJar>(),
+      ),
+    );
+    dio.interceptors.add(
+      AuthInterceptor(
+        dio: dio,
+        secureStorage: getIt<SecureStorageService>()),
     );
     // Logging
     assert(() {

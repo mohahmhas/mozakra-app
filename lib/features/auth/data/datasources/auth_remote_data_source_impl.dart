@@ -6,20 +6,19 @@ import 'package:e_store/features/auth/data/models/login_response_model.dart';
 import 'package:e_store/features/auth/data/models/register_request_model.dart';
 import 'package:e_store/features/auth/data/models/user_model.dart';
 
-class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
+class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   AuthRemoteDataSourceImpl({required ApiClient apiClient})
     : _apiClient = apiClient;
   final ApiClient _apiClient;
 
   @override
-  Future<LoginRequestModel> login(LoginRequestModel request) async {
+  Future<AuthResponseModel> login(LoginRequestModel request) async {
   final response = await _apiClient.post<Map<String, dynamic>>( 
     '/auth/login', 
     data: request.toJson(), 
     extra: { AuthInterceptor.requiresAuthKey: false, },
      ); 
-     return LoginRequestModel.fromJson(response.data!);
-  }
+    return AuthResponseModel.fromJson( response.data!, );  }
 
   @override
   Future<UserModel> getCurrentUser() async {
@@ -44,10 +43,10 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
   }
 
   @override
-  Future<RegisterRequestModel> register(RegisterRequestModel request) async{
+  Future<AuthResponseModel> register(RegisterRequestModel request) async{
    final response = await _apiClient.post<Map<String, dynamic>>(
      '/auth/register', data: request.toJson(), 
    extra: { AuthInterceptor.requiresAuthKey: false, }, ); 
-   return RegisterRequestModel.fromJson( response.data!, );
+   return AuthResponseModel.fromJson( response.data!, );
   }
 }

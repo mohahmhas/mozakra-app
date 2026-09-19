@@ -1,3 +1,6 @@
+import 'package:e_store/core/enums/user_rols.dart';
+import 'package:e_store/features/auth/domain/entities/user_entity.dart';
+
 class UserModel {
   const UserModel({
     required this.id,
@@ -25,5 +28,16 @@ class UserModel {
       'name': name,
       'email': email,
     };
+  }
+
+  UserEntity toEntity() {
+    return UserEntity(
+      id: id,
+      name: name,
+      email: email,
+      role: UserRole.student,
+      avatar: "",
+      bio: "",
+    );
   }
 }
