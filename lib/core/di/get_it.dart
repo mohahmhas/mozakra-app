@@ -7,6 +7,10 @@ import 'package:e_store/core/network/interceptors/logging_interceptor.dart';
 import 'package:e_store/core/storage/secure_storage_service.dart';
 import 'package:e_store/features/app/presentation/logic/cubit_localization/localization_cubit.dart';
 import 'package:e_store/features/app/presentation/logic/cubit_theme/theme_cubit.dart';
+import 'package:e_store/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:e_store/features/auth/data/datasources/auth_remote_data_source_impl.dart';
+import 'package:e_store/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:e_store/features/auth/domain/repositories/auth_repository.dart';
 import 'package:e_store/features/course/presentation/cubit/course_cubit.dart';
 import 'package:e_store/features/details_course/presentation/cubit/course_details_cubit.dart';
 import 'package:e_store/features/main_layout/presentation/cubit/cubit/bottom_nav_cubit.dart';
@@ -53,29 +57,21 @@ void _registerBlocs() {
 void _registerServices() {}
 
 void _registerRepositories() {
-  // Example: // 
-  //// getIt.registerLazySingleton<AuthRepository>( 
-  // () => AuthRepositoryImpl(
- // remoteDataSource: getIt<AuthRemoteDataSource>(), // ),
- // // );
+  getIt.registerLazySingleton<AuthRepository>(
+    () => AuthRepositoryImpl(remoteDataSource: getIt<AuthRemoteDataSource>(),secureStorage: getIt<SecureStorageService>()),
+  );
 }
 
 void _registerDataSources() {
-
-   // Example: // 
-    //// getIt.registerLazySingleton<AuthRemoteDataSource>( 
-    ///// () => AuthRemoteDataSource( // apiClient: getIt<ApiClient>(), // ), 
-    ///// );  
+  getIt.registerLazySingleton<AuthRemoteDataSource>(
+    () => AuthRemoteDataSourceImpl(apiClient: getIt<ApiClient>()),
+  );
 }
 
 void _registerNetwork() {
   // Secure Storage
-  getIt.registerLazySingleton<SecureStorageService>(
-   SecureStorageService.new,
-  );
-    getIt.registerLazySingleton<PersistCookieJar>(
-    () => PersistCookieJar(),
-  );
+  getIt.registerLazySingleton<SecureStorageService>(SecureStorageService.new);
+  getIt.registerLazySingleton<PersistCookieJar>(() => PersistCookieJar());
   // Dio
   getIt.registerLazySingleton<Dio>(() {
     final dio = Dio(
@@ -91,15 +87,9 @@ void _registerNetwork() {
         responseType: ResponseType.json,
       ),
     );
+    dio.interceptors.add(CookieManager(getIt<PersistCookieJar>()));
     dio.interceptors.add(
-      CookieManager(
-        getIt<PersistCookieJar>(),
-      ),
-    );
-    dio.interceptors.add(
-      AuthInterceptor(
-        dio: dio,
-        secureStorage: getIt<SecureStorageService>()),
+      AuthInterceptor(dio: dio, secureStorage: getIt<SecureStorageService>()),
     );
     // Logging
     assert(() {
@@ -112,18 +102,15 @@ void _registerNetwork() {
   // API Client
   getIt.registerLazySingleton<ApiClient>(() => ApiClient(dio: getIt<Dio>()));
 
-
-/// Registers all BLoCs and Cubits. void _registerBlocs() {
-  // ------------------------------------------------------------ // App-level Cubits // ------------------------------------------------------------ 
+  /// Registers all BLoCs and Cubits. void _registerBlocs() {
+  // ------------------------------------------------------------ // App-level Cubits // ------------------------------------------------------------
   //getIt.registerLazySingleton<ThemeCubit>( ThemeCubit.new, );
-  // getIt.registerLazySingleton<LocalizationCubit>( LocalizationCubit.new, ); 
+  // getIt.registerLazySingleton<LocalizationCubit>( LocalizationCubit.new, );
   //// ------------------------------------ // Feature-level Cubits // ----------------------
-  /// getIt.registerFactory<BottomNavCubit>( BottomNavCubit.new, ); 
-  /// getIt.registerFactory<CourseDetailsCubit>( CourseDetailsCubit.new, ); 
-  /// getIt.registerFactory<CourseCubit>( CourseCubit.new, ); 
-  /// getIt.registerFactory<SplashCubit>( SplashCubit.new, ); 
-  /// getIt.registerFactory<OnboardingCubit>( OnboardingCubit.new, ); 
+  /// getIt.registerFactory<BottomNavCubit>( BottomNavCubit.new, );
+  /// getIt.registerFactory<CourseDetailsCubit>( CourseDetailsCubit.new, );
+  /// getIt.registerFactory<CourseCubit>( CourseCubit.new, );
+  /// getIt.registerFactory<SplashCubit>( SplashCubit.new, );
+  /// getIt.registerFactory<OnboardingCubit>( OnboardingCubit.new, );
   /// getIt.registerFactory<OtpCubit>( OtpCubit.new, );
-
-
 }
