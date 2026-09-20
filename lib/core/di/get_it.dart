@@ -16,6 +16,7 @@ import 'package:e_store/features/auth/domain/usecases/login_use_case.dart';
 import 'package:e_store/features/auth/domain/usecases/logout_use_case.dart';
 import 'package:e_store/features/auth/domain/usecases/refresh_token_use_case.dart';
 import 'package:e_store/features/auth/domain/usecases/register_use_case.dart';
+import 'package:e_store/features/auth/presentation/cubit/login_cubit/login_cubit.dart';
 import 'package:e_store/features/course/presentation/cubit/course_cubit.dart';
 import 'package:e_store/features/details_course/presentation/cubit/course_details_cubit.dart';
 import 'package:e_store/features/main_layout/presentation/cubit/cubit/bottom_nav_cubit.dart';
@@ -54,6 +55,7 @@ void _registerBlocs() {
 
   getIt.registerLazySingleton(() => LocalizationCubit());
   // Feature level
+  getIt.registerFactory(()=>LoginCubit(loginUseCase: getIt<LoginUseCase>()));
   getIt.registerFactory(() => BottomNavCubit());
   getIt.registerFactory(() => CourseDetailsCubit());
   getIt.registerFactory(() => CourseCubit());
