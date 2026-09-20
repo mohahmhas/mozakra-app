@@ -11,6 +11,11 @@ import 'package:e_store/features/auth/data/datasources/auth_remote_data_source.d
 import 'package:e_store/features/auth/data/datasources/auth_remote_data_source_impl.dart';
 import 'package:e_store/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:e_store/features/auth/domain/repositories/auth_repository.dart';
+import 'package:e_store/features/auth/domain/usecases/get_current_user_use_case.dart';
+import 'package:e_store/features/auth/domain/usecases/login_use_case.dart';
+import 'package:e_store/features/auth/domain/usecases/logout_use_case.dart';
+import 'package:e_store/features/auth/domain/usecases/refresh_token_use_case.dart';
+import 'package:e_store/features/auth/domain/usecases/register_use_case.dart';
 import 'package:e_store/features/course/presentation/cubit/course_cubit.dart';
 import 'package:e_store/features/details_course/presentation/cubit/course_details_cubit.dart';
 import 'package:e_store/features/main_layout/presentation/cubit/cubit/bottom_nav_cubit.dart';
@@ -35,6 +40,9 @@ Future<void> setupGetIt() async {
 
   /// REPOSITORIES
   _registerRepositories();
+
+  //UseCases
+  _registerUseCases();
 
   /// BLOCS
   _registerBlocs();
@@ -113,4 +121,37 @@ void _registerNetwork() {
   /// getIt.registerFactory<SplashCubit>( SplashCubit.new, );
   /// getIt.registerFactory<OnboardingCubit>( OnboardingCubit.new, );
   /// getIt.registerFactory<OtpCubit>( OtpCubit.new, );
+}
+
+
+void _registerUseCases() {
+  getIt.registerLazySingleton(
+    () => LoginUseCase(
+      repository: getIt<AuthRepository>(),
+    ),
+  );
+
+  getIt.registerLazySingleton(
+    () => RegisterUseCase(
+      repository: getIt<AuthRepository>(),
+    ),
+  );
+
+  getIt.registerLazySingleton(
+    () => LogoutUseCase(
+      repository: getIt<AuthRepository>(),
+    ),
+  );
+
+  getIt.registerLazySingleton(
+    () => GetCurrentUserUseCase(
+      repository: getIt<AuthRepository>(),
+    ),
+  );
+
+  getIt.registerLazySingleton(
+    () => RefreshTokenUseCase(
+      repository: getIt<AuthRepository>(),
+    ),
+  );
 }
