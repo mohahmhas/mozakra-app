@@ -1,3 +1,4 @@
+import 'package:e_store/features/auth/domain/entities/user_entity.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
