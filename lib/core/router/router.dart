@@ -1,5 +1,6 @@
 import 'package:e_store/core/di/get_it.dart';
 import 'package:e_store/core/router/routes.dart';
+import 'package:e_store/features/auth/presentation/cubit/login_cubit/login_cubit.dart';
 import 'package:e_store/features/auth/presentation/screens/forgot_password_screen.dart';
 import 'package:e_store/features/auth/presentation/screens/login_screen.dart';
 import 'package:e_store/features/course/presentation/cubit/course_cubit.dart';
@@ -44,8 +45,14 @@ class AppRouter {
       ),
       GoRoute(
         path: Routes.login,
-        builder: (context, state) => const LoginScreen(),
+        builder: (context, state) {
+          return BlocProvider(
+            create: (_) => getIt<LoginCubit>(),
+            child: const LoginScreen(),
+          );
+        },
       ),
+
       GoRoute(
         path: Routes.otp,
         builder: (context, state) {
